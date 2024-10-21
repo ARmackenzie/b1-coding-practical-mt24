@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 import matplotlib.pyplot as plt
 from .terrain import generate_reference_and_limits
+import pandas as pd
 
 class Submarine:
     def __init__(self):
@@ -75,8 +76,21 @@ class Mission:
 
     @classmethod
     def from_csv(cls, file_name: str):
-        # You are required to implement this method
-        pass
+        # Read the CSV file using pandas
+        data = pd.read_csv(r"C:\Users\andre\OneDrive\Documents\B1_Scientific_Coding\b1-coding-practical-mt24\data\mission.csv")
+
+        # Extract relevant columns to form the arrays
+        reference = data['reference'].values  
+        cave_height = data['cave_height'].values  
+        cave_depth = data['cave_depth'].values  
+
+        # Convert them into numpy arrays
+        reference = np.array(reference)
+        cave_height = np.array(cave_height)
+        cave_depth = np.array(cave_depth)
+
+        # Return an instance of the class with the extracted data
+        return cls(reference, cave_height, cave_depth)
 
 
 class ClosedLoop:
