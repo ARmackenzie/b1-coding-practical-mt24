@@ -77,7 +77,7 @@ class Mission:
     @classmethod
     def from_csv(cls, file_name: str):
         # Read the CSV file using pandas
-        data = pd.read_csv(r"C:\Users\andre\OneDrive\Documents\B1_Scientific_Coding\b1-coding-practical-mt24\data\mission.csv")
+        data = pd.read_csv(file_name)
 
         # Extract relevant columns to form the arrays
         reference = data['reference'].values  
@@ -111,7 +111,15 @@ class ClosedLoop:
         for t in range(T):
             positions[t] = self.plant.get_position()
             observation_t = self.plant.get_depth()
-            # Call your controller here
+            
+            # Calculate the setpoint for the current time step
+            setpoint = mission.reference[t]
+            current_value = observation_t
+            
+            # Call the PD controller
+            actions[t] = self.controller.compute(setpoint, current_value)
+            
+            # Transition the plant using the action and disturbance
             self.plant.transition(actions[t], disturbances[t])
 
         return Trajectory(positions)
